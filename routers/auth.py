@@ -3,11 +3,11 @@ from fastapi.responses import JSONResponse
 from typing import Optional, List
 from sqlalchemy.orm import Session
 from database.database import get_db, settings
-from models import StudentModel, UserModel
+from models import StudentModel, UserModel, TokenModel
 from schemas import *
-from auth.utils import authenticate_user, generate_jwt_tokens, generate_access_token
+from auth.utils import authenticate_user, generate_jwt_tokens, generate_access_token,generate_token
 import jwt
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 
 router = APIRouter(prefix="/api/v1", tags=["Authenticate with jwt"])
 
@@ -25,6 +25,14 @@ async def login(request : LoginRequestSchema,
                             detail="username or password doesn't match")
 
     jwt_tokens = generate_jwt_tokens(user)
+    
+    expiration_time = datetime.now(timezone.utc) + timedelta(days=7)
+    user_token = TokenModel(user_id=user.id, 
+                               token=jwt_tokens["access_token"],
+                               expiration_date=expiration_time)
+    db.add(user_token)
+    db.commit()
+    db.refresh(user_token)
     return {
         "detail": "successfully logged in",
         "access_token": jwt_tokens["access_token"],

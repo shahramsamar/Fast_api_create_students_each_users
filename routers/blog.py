@@ -8,7 +8,7 @@ from schemas import *
 from auth.bearer import TokenBearer
 
 router =  APIRouter(prefix="/api/v1",
-                    tags=["crude in blog by Names"])
+                    tags=["crud in blog by Names"])
 
 
 @router.get("/names",
