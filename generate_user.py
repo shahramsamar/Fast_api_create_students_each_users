@@ -17,7 +17,7 @@ try:
     # add all the sample  students ti the session in bulk
     # session.bulk_save_objects(user)
     
-    for _ in range(2):
+    for _ in range(1):
         print("Give me a username and password to create a user:")
         username = input("Enter username: ").lower()
         password = input("Enter password: ").lower()
